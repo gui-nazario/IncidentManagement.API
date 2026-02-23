@@ -26,4 +26,12 @@ public class StoreService : IStoreService
     {
         return await _repository.AddAsync(store);
     }
+    public async Task<List<Store>> GetInactiveStoresAsync()
+    {
+        return await _repository.GetInactiveStoresAsync();
+    }
+    public async Task<List<Store>> GetStoresAsync(bool? active)
+    {
+        return await _repository.GetStoresAsync(active);
+    }
 }

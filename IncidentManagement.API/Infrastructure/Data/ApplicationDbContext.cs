@@ -12,6 +12,7 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Store> Stores => Set<Store>();
     public DbSet<User> Users => Set<User>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -50,6 +51,19 @@ public class ApplicationDbContext : DbContext
             entity.Property(u => u.Role)
                   .IsRequired()
                   .HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasKey(r => r.Id);
+
+            entity.Property(r => r.Token)
+                  .IsRequired();
+
+            entity.HasOne(r => r.User)
+                  .WithMany(u => u.RefreshTokens)
+                  .HasForeignKey(r => r.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

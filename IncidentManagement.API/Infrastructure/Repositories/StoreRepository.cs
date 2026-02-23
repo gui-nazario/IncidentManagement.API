@@ -30,4 +30,19 @@ public class StoreRepository : IStoreRepository
         return await _context.Stores
             .FirstOrDefaultAsync(x => x.Id == id);
     }
+    public async Task<List<Store>> GetInactiveStoresAsync()
+    {
+        return await _context.Stores
+            .Where(s => !s.IsActive)
+            .ToListAsync();
+    }
+    public async Task<List<Store>> GetStoresAsync(bool? active)
+    {
+        var query = _context.Stores.AsQueryable();
+
+        if (active.HasValue)
+            query = query.Where(s => s.IsActive == active.Value);
+
+        return await query.ToListAsync();
+    }
 }

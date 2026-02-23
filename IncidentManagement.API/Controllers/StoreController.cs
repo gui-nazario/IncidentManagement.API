@@ -18,9 +18,16 @@ public class StoreController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] bool? active)
     {
-        var stores = await _service.GetAllAsync();
+        var stores = await _service.GetStoresAsync(active);
+        return Ok(stores);
+    }
+
+    [HttpGet("inactive")]
+    public async Task<IActionResult> GetInactive()
+    {
+        var stores = await _service.GetInactiveStoresAsync();
         return Ok(stores);
     }
 

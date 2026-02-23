@@ -7,4 +7,6 @@ public interface IStoreService
     Task<IEnumerable<Store>> GetAllAsync();
     Task<Store?> GetByIdAsync(Guid id);
     Task<Store> CreateAsync(Store store);
+    Task<List<Store>> GetInactiveStoresAsync();
+    Task<List<Store>> GetStoresAsync(bool? active);
 }

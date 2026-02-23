@@ -15,14 +15,25 @@ public class AuthController : ControllerBase
 {
     private readonly IConfiguration _configuration;
     private readonly IUserRepository _userRepository;
+    private readonly IRefreshTokenRepository _refreshTokenRepository;
 
     public AuthController(
-        IConfiguration configuration,
-        IUserRepository userRepository)
+    IConfiguration configuration,
+    IUserRepository userRepository,
+    IRefreshTokenRepository refreshTokenRepository)
     {
         _configuration = configuration;
         _userRepository = userRepository;
+        _refreshTokenRepository = refreshTokenRepository;
     }
+    private string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[64];
+        using var rng = System.Security.Cryptography.RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
+    }
+
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
@@ -78,11 +89,92 @@ public class AuthController : ControllerBase
             signingCredentials: creds
         );
 
+        var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+        var refreshToken = GenerateRefreshToken();
+
+        var refreshTokenEntity = new RefreshToken
+        {
+            Token = refreshToken,
+            ExpirationDate = DateTime.UtcNow.AddDays(7),
+            UserId = user.Id
+        };
+
+        await _refreshTokenRepository.AddAsync(refreshTokenEntity);
+
+        // Ainda NÃO estamos salvando no banco
+
         return Ok(new
         {
-            token = new JwtSecurityTokenHandler().WriteToken(token)
+            accessToken,
+            refreshToken
+        });
+    }
+
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh([FromBody] RefreshRequest request)
+    {
+        var storedToken = await _refreshTokenRepository.GetByTokenAsync(request.RefreshToken);
+
+        if (storedToken == null)
+            return Unauthorized("Refresh token inválido.");
+
+        if (storedToken.IsRevoked)
+            return Unauthorized("Refresh token revogado.");
+
+        if (storedToken.ExpirationDate <= DateTime.UtcNow)
+            return Unauthorized("Refresh token expirado.");
+
+        var user = storedToken.User;
+
+        if (user == null)
+            return Unauthorized();
+
+        // Rotaciona token
+        storedToken.IsRevoked = true;
+        await _refreshTokenRepository.UpdateAsync(storedToken);
+
+        var newRefreshToken = GenerateRefreshToken();
+
+        var newRefreshTokenEntity = new RefreshToken
+        {
+            Token = newRefreshToken,
+            ExpirationDate = DateTime.UtcNow.AddDays(7),
+            UserId = user.Id
+        };
+
+        await _refreshTokenRepository.AddAsync(newRefreshTokenEntity);
+
+        var jwtSettings = _configuration.GetSection("Jwt");
+        var key = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(jwtSettings["Key"]!)
+        );
+
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var claims = new[]
+        {
+        new Claim(ClaimTypes.Name, user.Username),
+        new Claim(ClaimTypes.Role, user.Role)
+    };
+
+        var token = new JwtSecurityToken(
+            issuer: jwtSettings["Issuer"],
+            audience: jwtSettings["Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(15),
+            signingCredentials: creds
+        );
+
+        var newAccessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return Ok(new
+        {
+            accessToken = newAccessToken,
+            refreshToken = newRefreshToken
         });
     }
 }
 
 public record LoginRequest(string Username, string Password);
+public record RefreshRequest(string RefreshToken);
