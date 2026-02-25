@@ -7,7 +7,7 @@ namespace IncidentManagement.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Admin")]
+[Authorize]
 public class StoreController : ControllerBase
 {
     private readonly IStoreService _service;
@@ -38,6 +38,7 @@ public class StoreController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(Store store)
     {
         var createdStore = await _service.CreateAsync(store);

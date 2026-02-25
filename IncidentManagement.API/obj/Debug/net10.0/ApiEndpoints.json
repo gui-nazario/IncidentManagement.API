@@ -242,8 +242,8 @@
   },
   {
     "ContainingType": "IncidentManagement.API.Controllers.UsersController",
-    "Method": "Promote",
-    "RelativePath": "api/Users/promote/{username}",
+    "Method": "UpdateRole",
+    "RelativePath": "api/Users/{username}/role",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -251,6 +251,11 @@
       {
         "Name": "username",
         "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "IncidentManagement.API.Controllers.UsersController\u002BUpdateRoleRequest",
         "IsRequired": true
       }
     ],

@@ -16,21 +16,29 @@ public class UsersController : ControllerBase
         _userRepository = userRepository;
     }
 
-    [HttpPut("promote/{username}")]
-    public async Task<IActionResult> Promote(string username)
+    [HttpPut("{username}/role")]
+    public async Task<IActionResult> UpdateRole(string username, [FromBody] UpdateRoleRequest request)
     {
         var user = await _userRepository.GetByUsernameAsync(username);
 
         if (user == null)
             return NotFound("Usuário não encontrado.");
 
-        if (user.Role == "Admin")
-            return BadRequest("Usuário já é Admin.");
+        var allowedRoles = new[] { "User", "Admin" };
 
-        user.Role = "Admin";
+        var normalizedRole = request.Role.Trim();
+
+        if (!allowedRoles.Any(r => r.Equals(normalizedRole, StringComparison.OrdinalIgnoreCase)))
+            return BadRequest("Role inválida.");
+
+        user.Role = allowedRoles
+            .First(r => r.Equals(normalizedRole, StringComparison.OrdinalIgnoreCase));
+
+        user.Role = request.Role;
 
         await _userRepository.UpdateAsync(user);
 
-        return Ok($"Usuário {username} promovido para Admin.");
+        return Ok($"Usuário {username} agora é {request.Role}.");
     }
+    public record UpdateRoleRequest(string Role);
 }

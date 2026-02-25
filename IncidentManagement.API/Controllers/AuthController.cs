@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using IncidentManagement.API.Application.Common;
 
 namespace IncidentManagement.API.Controllers;
 
@@ -93,9 +94,11 @@ public class AuthController : ControllerBase
 
         var refreshToken = GenerateRefreshToken();
 
+        var hashedRefreshToken = PasswordHasher.Hash(refreshToken);
+
         var refreshTokenEntity = new RefreshToken
         {
-            Token = refreshToken,
+            Token = hashedRefreshToken,
             ExpirationDate = DateTime.UtcNow.AddDays(7),
             UserId = user.Id
         };
@@ -114,7 +117,10 @@ public class AuthController : ControllerBase
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh([FromBody] RefreshRequest request)
     {
-        var storedToken = await _refreshTokenRepository.GetByTokenAsync(request.RefreshToken);
+        var activeTokens = await _refreshTokenRepository.GetActiveTokensAsync();
+
+        var storedToken = activeTokens
+            .FirstOrDefault(t => PasswordHasher.Verify(request.RefreshToken, t.Token));
 
         if (storedToken == null)
             return Unauthorized("Refresh token inválido.");
