@@ -18,17 +18,12 @@ public class StoreController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] bool? active)
+    public async Task<IActionResult> GetAll(
+    [FromQuery] int page = 1,
+    [FromQuery] int pageSize = 10)
     {
-        var stores = await _service.GetStoresAsync(active);
-        return Ok(stores);
-    }
-
-    [HttpGet("inactive")]
-    public async Task<IActionResult> GetInactive()
-    {
-        var stores = await _service.GetInactiveStoresAsync();
-        return Ok(stores);
+        var result = await _service.GetPagedAsync(page, pageSize);
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
@@ -51,5 +46,16 @@ public class StoreController : ControllerBase
             nameof(GetById),
             new { id = createdStore.Id },
             createdStore);
+    }
+    [HttpGet("filter")]
+    public async Task<IActionResult> Filter(
+    [FromQuery] string? region,
+    [FromQuery] string? state,
+    [FromQuery] StoreStatus? status,
+    [FromQuery] int page = 1,
+    [FromQuery] int pageSize = 10)
+    {
+        var result = await _service.GetFilteredAsync(region, state, status, page, pageSize);
+        return Ok(result);
     }
 }

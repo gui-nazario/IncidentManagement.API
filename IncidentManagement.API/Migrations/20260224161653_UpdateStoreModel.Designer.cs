@@ -3,6 +3,7 @@ using System;
 using IncidentManagement.API.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IncidentManagement.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260224161653_UpdateStoreModel")]
+    partial class UpdateStoreModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,34 +144,6 @@ namespace IncidentManagement.API.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("StoreFinancial", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("Expenses")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("Month")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("Revenue")
-                        .HasColumnType("numeric");
-
-                    b.Property<Guid>("StoreId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StoreId");
-
-                    b.ToTable("StoreFinancials");
-                });
-
             modelBuilder.Entity("IncidentManagement.API.Domain.Entities.RefreshToken", b =>
                 {
                     b.HasOne("IncidentManagement.API.Domain.Entities.User", "User")
@@ -178,22 +153,6 @@ namespace IncidentManagement.API.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("StoreFinancial", b =>
-                {
-                    b.HasOne("IncidentManagement.API.Domain.Entities.Store", "Store")
-                        .WithMany("Financials")
-                        .HasForeignKey("StoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Store");
-                });
-
-            modelBuilder.Entity("IncidentManagement.API.Domain.Entities.Store", b =>
-                {
-                    b.Navigation("Financials");
                 });
 
             modelBuilder.Entity("IncidentManagement.API.Domain.Entities.User", b =>

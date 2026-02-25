@@ -65,5 +65,10 @@ public class ApplicationDbContext : DbContext
                   .HasForeignKey(r => r.UserId)
                   .OnDelete(DeleteBehavior.Cascade);
         });
+        modelBuilder.Entity<StoreFinancial>()
+    .HasOne(sf => sf.Store)
+    .WithMany(s => s.Financials)
+    .HasForeignKey(sf => sf.StoreId);
     }
+    public DbSet<StoreFinancial> StoreFinancials { get; set; }
 }

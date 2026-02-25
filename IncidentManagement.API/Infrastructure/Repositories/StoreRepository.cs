@@ -33,16 +33,21 @@ public class StoreRepository : IStoreRepository
     public async Task<List<Store>> GetInactiveStoresAsync()
     {
         return await _context.Stores
-            .Where(s => !s.IsActive)
+            .Where(s => s.Status == StoreStatus.Inactive)
             .ToListAsync();
     }
-    public async Task<List<Store>> GetStoresAsync(bool? active)
+
+    public async Task<List<Store>> GetStoresAsync(StoreStatus? status)
     {
         var query = _context.Stores.AsQueryable();
 
-        if (active.HasValue)
-            query = query.Where(s => s.IsActive == active.Value);
+        if (status.HasValue)
+            query = query.Where(s => s.Status == status.Value);
 
         return await query.ToListAsync();
+    }
+    public Task<IQueryable<Store>> GetQueryableAsync()
+    {
+        return Task.FromResult(_context.Stores.AsQueryable());
     }
 }

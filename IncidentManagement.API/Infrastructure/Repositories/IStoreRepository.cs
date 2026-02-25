@@ -8,5 +8,6 @@ public interface IStoreRepository
     Task<Store?> GetByIdAsync(Guid id);
     Task<Store> AddAsync(Store store);
     Task<List<Store>> GetInactiveStoresAsync();
-    Task<List<Store>> GetStoresAsync(bool? active);
+    Task<List<Store>> GetStoresAsync(StoreStatus? status);
+    Task<IQueryable<Store>> GetQueryableAsync();
 }
