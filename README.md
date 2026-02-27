@@ -263,8 +263,8 @@ Backend Developer | .NET | APIs REST | Automação
 
 ## 📄 Licença
 
-======= HEAD
+<<<<<<< HEAD
 Projeto para fins educacionais e demonstração técnica.
 =======
 Projeto para fins educacionais e demonstração técnica.
-======= 5e7374a (docs: add README and replace gitignore)
+<<<<<<< 5e7374a (docs: add README and replace gitignore)
