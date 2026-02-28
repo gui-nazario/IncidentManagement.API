@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using IncidentManagement.API.Application.Common;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IncidentManagement.API.Controllers;
 
@@ -36,6 +37,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
         var existingUser = await _userRepository.GetByUsernameAsync(request.Username);

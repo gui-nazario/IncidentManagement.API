@@ -34,8 +34,6 @@ public class UsersController : ControllerBase
         user.Role = allowedRoles
             .First(r => r.Equals(normalizedRole, StringComparison.OrdinalIgnoreCase));
 
-        user.Role = request.Role;
-
         await _userRepository.UpdateAsync(user);
 
         return Ok($"Usuário {username} agora é {request.Role}.");
