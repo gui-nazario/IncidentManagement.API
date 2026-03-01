@@ -6,7 +6,7 @@ namespace IncidentManagement.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "SuperAdmin")]
 public class UsersController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
