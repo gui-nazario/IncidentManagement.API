@@ -69,6 +69,25 @@ public class ApplicationDbContext : DbContext
     .HasOne(sf => sf.Store)
     .WithMany(s => s.Financials)
     .HasForeignKey(sf => sf.StoreId);
+
+        modelBuilder.Entity<AuditLog>(entity =>
+        {
+            entity.HasKey(a => a.Id);
+
+            entity.Property(a => a.Action)
+                  .IsRequired()
+                  .HasMaxLength(100);
+
+            entity.Property(a => a.PerformedBy)
+                  .IsRequired()
+                  .HasMaxLength(100);
+
+            entity.Property(a => a.Timestamp)
+                  .IsRequired();
+        });
     }
+
+
     public DbSet<StoreFinancial> StoreFinancials { get; set; }
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 }
