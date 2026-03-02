@@ -78,6 +78,7 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
+app.UseMiddleware<IncidentManagement.API.Middleware.AuditMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
