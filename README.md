@@ -1,12 +1,12 @@
 # 🚀 IncidentManagement.API
 
-API REST desenvolvida em **.NET 10** para gerenciamento de lojas, usuários e indicadores financeiros, com autenticação JWT e arquitetura em camadas.
+API REST desenvolvida em *.NET 10* para gerenciamento de lojas, usuários e indicadores financeiros, com autenticação JWT e arquitetura em camadas.
 
 ---
 
 ## 📌 Sobre o Projeto
 
-O **IncidentManagement.API** é uma API backend criada para centralizar o gerenciamento de informações de lojas, incluindo:
+O *IncidentManagement.API* é uma API backend criada para centralizar o gerenciamento de informações de lojas, incluindo:
 
 * Cadastro e autenticação de usuários
 * Consulta de lojas
@@ -15,7 +15,7 @@ O **IncidentManagement.API** é uma API backend criada para centralizar o gerenc
 * Controle de acesso via JWT
 * Tratamento global de exceções
 
-O projeto segue boas práticas modernas de desenvolvimento backend utilizando **Clean Architecture simplificada**, separando responsabilidades entre Controllers, Services e Repositories.
+O projeto segue boas práticas modernas de desenvolvimento backend utilizando *Clean Architecture simplificada*, separando responsabilidades entre Controllers, Services e Repositories.
 
 ---
 
@@ -23,7 +23,7 @@ O projeto segue boas práticas modernas de desenvolvimento backend utilizando **
 
 O projeto está organizado em camadas:
 
-```
+
 IncidentManagement.API
 │
 ├── Controllers        → Endpoints da API
@@ -34,7 +34,7 @@ IncidentManagement.API
 │   └── Repositories   → Acesso ao banco
 ├── Middleware         → Tratamento global de erros
 └── Program.cs         → Configuração da aplicação
-```
+
 
 ---
 
@@ -54,7 +54,7 @@ IncidentManagement.API
 
 ## 🔐 Autenticação
 
-A API utiliza **JWT (JSON Web Token)** para autenticação.
+A API utiliza *JWT (JSON Web Token)* para autenticação.
 
 Fluxo:
 
@@ -65,9 +65,9 @@ Fluxo:
    * Refresh Token
 3. Token deve ser enviado nos endpoints protegidos:
 
-```
+
 Authorization: Bearer SEU_TOKEN
-```
+
 
 ---
 
@@ -77,9 +77,9 @@ Authorization: Bearer SEU_TOKEN
 
 | Método | Endpoint             | Descrição         |
 | ------ | -------------------- | ----------------- |
-| POST   | `/api/Auth/register` | Registrar usuário |
-| POST   | `/api/Auth/login`    | Login             |
-| POST   | `/api/Auth/refresh`  | Renovar token     |
+| POST   | /api/Auth/register | Registrar usuário |
+| POST   | /api/Auth/login    | Login             |
+| POST   | /api/Auth/refresh  | Renovar token     |
 
 ---
 
@@ -87,8 +87,8 @@ Authorization: Bearer SEU_TOKEN
 
 | Método | Endpoint          | Descrição          |
 | ------ | ----------------- | ------------------ |
-| GET    | `/api/Store`      | Listar lojas       |
-| GET    | `/api/Store/{id}` | Buscar loja por ID |
+| GET    | /api/Store      | Listar lojas       |
+| GET    | /api/Store/{id} | Buscar loja por ID |
 
 ---
 
@@ -96,7 +96,7 @@ Authorization: Bearer SEU_TOKEN
 
 | Método | Endpoint                 | Descrição    |
 | ------ | ------------------------ | ------------ |
-| GET    | `/api/Dashboard/summary` | Resumo geral |
+| GET    | /api/Dashboard/summary | Resumo geral |
 
 ---
 
@@ -104,10 +104,10 @@ Authorization: Bearer SEU_TOKEN
 
 | Método | Endpoint                                 | Descrição                 |
 | ------ | ---------------------------------------- | ------------------------- |
-| POST   | `/api/Financial/seed`                    | Popular dados financeiros |
-| GET    | `/api/Financial/store/{storeId}`         | Dados financeiros         |
-| GET    | `/api/Financial/store/{storeId}/growth`  | Crescimento               |
-| GET    | `/api/Financial/store/{storeId}/metrics` | Métricas                  |
+| POST   | /api/Financial/seed                    | Popular dados financeiros |
+| GET    | /api/Financial/store/{storeId}         | Dados financeiros         |
+| GET    | /api/Financial/store/{storeId}/growth  | Crescimento               |
+| GET    | /api/Financial/store/{storeId}/metrics | Métricas                  |
 
 ---
 
@@ -121,12 +121,12 @@ A aplicação possui um middleware global responsável por:
 
 Exemplo de resposta:
 
-```json
+json
 {
   "status": 500,
   "message": "Ocorreu um erro interno no servidor."
 }
-```
+
 
 ---
 
@@ -134,21 +134,21 @@ Exemplo de resposta:
 
 Banco utilizado:
 
-```
+
 PostgreSQL
-```
+
 
 ORM:
 
-```
+
 Entity Framework Core
-```
+
 
 Connection String configurada em:
 
-```
+
 appsettings.json
-```
+
 
 ---
 
@@ -156,41 +156,41 @@ appsettings.json
 
 ### 1️⃣ Clonar repositório
 
-```bash
+bash
 git clone https://github.com/seu-usuario/IncidentManagement.API.git
-```
+
 
 ---
 
 ### 2️⃣ Entrar na pasta
 
-```bash
+bash
 cd IncidentManagement.API
-```
+
 
 ---
 
 ### 3️⃣ Restaurar dependências
 
-```bash
+bash
 dotnet restore
-```
+
 
 ---
 
 ### 4️⃣ Executar migrations (se aplicável)
 
-```bash
+bash
 dotnet ef database update
-```
+
 
 ---
 
 ### 5️⃣ Rodar API
 
-```bash
+bash
 dotnet run
-```
+
 
 ---
 
@@ -198,9 +198,9 @@ dotnet run
 
 Após iniciar o projeto:
 
-```
+
 https://localhost:7061/swagger
-```
+
 
 Permite:
 
@@ -212,7 +212,7 @@ Permite:
 
 ## 🔄 Fluxo Geral da Aplicação
 
-```
+
 Request
    ↓
 Controller
@@ -224,7 +224,7 @@ Repository
 Database
    ↓
 Response
-```
+
 
 ---
 
@@ -255,7 +255,7 @@ Response
 
 ## 👨‍💻 Autor
 
-Desenvolvido por **Guilherme Nazario**
+Desenvolvido por *Guilherme Nazario*
 
 Backend Developer | .NET | APIs REST | Automação
 
