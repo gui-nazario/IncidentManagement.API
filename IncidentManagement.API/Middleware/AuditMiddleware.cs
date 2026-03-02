@@ -1,6 +1,7 @@
 ﻿using IncidentManagement.API.Infrastructure.Data;
 using IncidentManagement.API.Domain.Entities;
 using System.Security.Claims;
+using IncidentManagement.API.Domain.Enums;
 
 namespace IncidentManagement.API.Middleware;
 
@@ -53,6 +54,9 @@ public class AuditMiddleware
                 TargetUser = "-",
                 OldRole = "-",
                 NewRole = "-",
+
+                Source = AuditSource.ApiRequest,
+
                 CreatedAt = DateTime.UtcNow,
                 Timestamp = DateTime.UtcNow,
                 StatusCode = context.Response.StatusCode,

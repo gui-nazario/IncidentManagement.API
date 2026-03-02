@@ -1,4 +1,6 @@
-﻿namespace IncidentManagement.API.Domain.Entities;
+﻿using IncidentManagement.API.Domain.Enums;
+
+namespace IncidentManagement.API.Domain.Entities;
 
 public class AuditLog
 {
@@ -18,7 +20,7 @@ public class AuditLog
     public bool Success { get; set; }
     public int StatusCode { get; set; }
     public string? ErrorMessage { get; set; }
-
+    public AuditSource Source { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime Timestamp { get; set; }
 }

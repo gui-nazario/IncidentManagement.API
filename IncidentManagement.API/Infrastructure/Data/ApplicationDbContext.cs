@@ -85,6 +85,11 @@ public class ApplicationDbContext : DbContext
             entity.Property(a => a.Timestamp)
                   .IsRequired();
         });
+
+        modelBuilder.Entity<AuditLog>()
+    .Property(a => a.Source)
+    .HasConversion<int>();
+
     }
 
 

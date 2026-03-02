@@ -4,6 +4,7 @@ using IncidentManagement.API.Infrastructure.Repositories;
 using IncidentManagement.API.Infrastructure.Data;
 using System.ComponentModel.DataAnnotations;
 using IncidentManagement.API.Domain.Entities;
+using IncidentManagement.API.Domain.Enums;
 
 namespace IncidentManagement.API.Controllers;
 
@@ -57,9 +58,14 @@ public class UsersController : ControllerBase
             Action = "RoleUpdated",
             PerformedBy = User.Identity!.Name!,
             TargetUser = username,
-            OldRole = oldRole,
+            OldRole = oldRole!,
             NewRole = user.Role,
             Reason = request.Reason,
+
+            Source = AuditSource.BusinessRule, // ✅
+
+            StatusCode = 200,
+            Success = true,
             CreatedAt = DateTime.UtcNow,
             Timestamp = DateTime.UtcNow
         };
