@@ -30,6 +30,9 @@ public class UsersController : ControllerBase
         if (user == null)
             return NotFound("Usuário não encontrado.");
 
+        if (string.IsNullOrWhiteSpace(request.Reason) || request.Reason.Length < 10)
+            return BadRequest("Motivo deve conter pelo menos 10 caracteres.");
+
         // ✅ guarda role antiga
         var oldRole = user.Role;
 
@@ -56,6 +59,7 @@ public class UsersController : ControllerBase
             TargetUser = username,
             OldRole = oldRole,
             NewRole = user.Role,
+            Reason = request.Reason,
             CreatedAt = DateTime.UtcNow,
             Timestamp = DateTime.UtcNow
         };
@@ -65,5 +69,8 @@ public class UsersController : ControllerBase
 
         return Ok($"Usuário {username} agora é {user.Role}.");
     }
-    public record UpdateRoleRequest(string Role);
+    public record UpdateRoleRequest(
+        string Role,
+        String Reason
+    );
 }
