@@ -15,6 +15,11 @@ public class AuditMiddleware
 
     public async Task InvokeAsync(HttpContext context, ApplicationDbContext db)
     {
+        var originalBodyStream = context.Response.Body;
+
+        using var responseBody = new MemoryStream();
+        context.Response.Body = responseBody;
+
         var username =
             context.User?.Identity?.IsAuthenticated == true
             ? context.User.FindFirst(ClaimTypes.Name)?.Value
@@ -23,44 +28,40 @@ public class AuditMiddleware
         var path = context.Request.Path;
         var method = context.Request.Method;
 
+        await _next(context);
+
+        responseBody.Seek(0, SeekOrigin.Begin);
+        var responseText = await new StreamReader(responseBody).ReadToEndAsync();
+
+        responseBody.Seek(0, SeekOrigin.Begin);
+        await responseBody.CopyToAsync(originalBodyStream);
+
         string? errorMessage = null;
 
-        try
+        if (context.Response.StatusCode >= 400)
         {
-            // Executa pipeline
-            await _next(context);
+            errorMessage = responseText;
         }
-        catch (Exception ex)
+
+        if (username != "Anonymous")
         {
-            errorMessage = ex.Message;
-            throw;
-        }
-        finally
-        {
-            // Só loga usuário autenticado
-            if (username != "Anonymous")
+            var audit = new AuditLog
             {
-                var audit = new AuditLog
-                {
-                    Id = Guid.NewGuid(),
-                    Action = $"{method} {path}",
-                    PerformedBy = username!,
-                    TargetUser = "-",
-                    OldRole = "-",
-                    NewRole = "-",
-                    Reason = "-",
+                Id = Guid.NewGuid(),
+                Action = $"{method} {path}",
+                PerformedBy = username!,
+                TargetUser = "-",
+                OldRole = "-",
+                NewRole = "-",
+                CreatedAt = DateTime.UtcNow,
+                Timestamp = DateTime.UtcNow,
+                StatusCode = context.Response.StatusCode,
+                Success = context.Response.StatusCode < 400,
+                ErrorMessage = errorMessage
+            };
 
-                    Success = context.Response.StatusCode < 400,
-                    StatusCode = context.Response.StatusCode,
-                    ErrorMessage = errorMessage,
-
-                    CreatedAt = DateTime.UtcNow,
-                    Timestamp = DateTime.UtcNow
-                };
-
-                db.AuditLogs.Add(audit);
-                await db.SaveChangesAsync();
-            }
+            db.AuditLogs.Add(audit);
+            await db.SaveChangesAsync();
         }
     }
 }
