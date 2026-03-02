@@ -15,8 +15,6 @@ public class AuditMiddleware
 
     public async Task InvokeAsync(HttpContext context, ApplicationDbContext db)
     {
-        Console.WriteLine("AUDIT MIDDLEWARE EXECUTADO");
-
         var username =
             context.User?.Identity?.IsAuthenticated == true
             ? context.User.FindFirst(ClaimTypes.Name)?.Value
@@ -25,20 +23,37 @@ public class AuditMiddleware
         var path = context.Request.Path;
         var method = context.Request.Method;
 
-        await _next(context);
+        string? errorMessage = null;
 
         try
         {
-            if (username != null && username != "Anonymous")
+            // Executa pipeline
+            await _next(context);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            throw;
+        }
+        finally
+        {
+            // Só loga usuário autenticado
+            if (username != "Anonymous")
             {
                 var audit = new AuditLog
                 {
                     Id = Guid.NewGuid(),
                     Action = $"{method} {path}",
-                    PerformedBy = username,
+                    PerformedBy = username!,
                     TargetUser = "-",
                     OldRole = "-",
                     NewRole = "-",
+                    Reason = "-",
+
+                    Success = context.Response.StatusCode < 400,
+                    StatusCode = context.Response.StatusCode,
+                    ErrorMessage = errorMessage,
+
                     CreatedAt = DateTime.UtcNow,
                     Timestamp = DateTime.UtcNow
                 };
@@ -46,10 +61,6 @@ public class AuditMiddleware
                 db.AuditLogs.Add(audit);
                 await db.SaveChangesAsync();
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"AUDIT ERROR: {ex.Message}");
         }
     }
 }

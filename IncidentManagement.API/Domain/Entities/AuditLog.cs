@@ -15,6 +15,9 @@ public class AuditLog
     public string NewRole { get; set; } = null!;
 
     public string Reason { get; set; } = string.Empty;
+    public bool Success { get; set; }
+    public int StatusCode { get; set; }
+    public string? ErrorMessage { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime Timestamp { get; set; }

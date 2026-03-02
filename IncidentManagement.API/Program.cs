@@ -80,9 +80,9 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
-app.UseMiddleware<IncidentManagement.API.Middleware.AuditMiddleware>();
-
 app.UseAuthorization();
+
+app.UseMiddleware<IncidentManagement.API.Middleware.AuditMiddleware>();
 
 app.MapControllers();
 
