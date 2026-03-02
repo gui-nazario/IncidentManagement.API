@@ -15,6 +15,8 @@ public class AuditMiddleware
 
     public async Task InvokeAsync(HttpContext context, ApplicationDbContext db)
     {
+        Console.WriteLine("AUDIT MIDDLEWARE EXECUTADO");
+
         var username =
             context.User?.Identity?.IsAuthenticated == true
             ? context.User.FindFirst(ClaimTypes.Name)?.Value
@@ -23,26 +25,31 @@ public class AuditMiddleware
         var path = context.Request.Path;
         var method = context.Request.Method;
 
-        // Executa request primeiro
         await _next(context);
 
-        // Só registra se usuário autenticado
-        if (username != null && username != "Anonymous")
+        try
         {
-            var audit = new AuditLog
+            if (username != null && username != "Anonymous")
             {
-                Id = Guid.NewGuid(),
-                Action = $"{method} {path}",
-                PerformedBy = username,
-                TargetUser = "-",
-                OldRole = "-",
-                NewRole = "-",
-                CreatedAt = DateTime.UtcNow,
-                Timestamp = DateTime.UtcNow
-            };
+                var audit = new AuditLog
+                {
+                    Id = Guid.NewGuid(),
+                    Action = $"{method} {path}",
+                    PerformedBy = username,
+                    TargetUser = "-",
+                    OldRole = "-",
+                    NewRole = "-",
+                    CreatedAt = DateTime.UtcNow,
+                    Timestamp = DateTime.UtcNow
+                };
 
-            db.AuditLogs.Add(audit);
-            await db.SaveChangesAsync();
+                db.AuditLogs.Add(audit);
+                await db.SaveChangesAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"AUDIT ERROR: {ex.Message}");
         }
     }
 }

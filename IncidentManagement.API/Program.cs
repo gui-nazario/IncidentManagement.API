@@ -78,14 +78,14 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-app.UseMiddleware<IncidentManagement.API.Middleware.AuditMiddleware>();
 app.UseAuthentication();
+
+app.UseMiddleware<IncidentManagement.API.Middleware.AuditMiddleware>();
+
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.MapGet("/", () => Results.Redirect("/swagger"));
-
-app.Run();
 
 app.Run();
