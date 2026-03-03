@@ -39,7 +39,7 @@ com foco em:
 
 ## 🧱 Arquitetura
 
-
+````
 IncidentManagement.API
 │
 ├── Controllers        → Endpoints HTTP
@@ -54,7 +54,7 @@ IncidentManagement.API
 ├── Middleware         → Auditoria + Exceptions
 └── Program.cs         → Configuração da aplicação
 
-
+````
 ---
 
 ## ⚙️ Tecnologias
