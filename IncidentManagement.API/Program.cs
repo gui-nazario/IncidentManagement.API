@@ -9,7 +9,8 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 Console.WriteLine($"ENVIRONMENT: {builder.Environment.EnvironmentName}");
-
+Console.WriteLine("USING CONNECTION:");
+Console.WriteLine(builder.Configuration.GetConnectionString("DefaultConnection"));
 builder.Configuration
     .AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
 

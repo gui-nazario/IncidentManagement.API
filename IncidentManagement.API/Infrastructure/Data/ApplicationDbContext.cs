@@ -90,9 +90,37 @@ public class ApplicationDbContext : DbContext
     .Property(a => a.Source)
     .HasConversion<int>();
 
+        modelBuilder.Entity<PaymentMethod>().HasData(
+    new PaymentMethod { Id = 1, Name = "Pix" },
+    new PaymentMethod { Id = 2, Name = "Credit Card" },
+    new PaymentMethod { Id = 3, Name = "Debit Card" },
+    new PaymentMethod { Id = 4, Name = "Boleto" }
+);
+
+        modelBuilder.Entity<PurchaseChannel>().HasData(
+            new PurchaseChannel { Id = 1, Name = "App" },
+            new PurchaseChannel { Id = 2, Name = "Website" },
+            new PurchaseChannel { Id = 3, Name = "Physical Store" }
+        );
+
+        modelBuilder.Entity<OrderStatus>().HasData(
+            new OrderStatus { Id = 1, Name = "Pending" },
+            new OrderStatus { Id = 2, Name = "Paid" },
+            new OrderStatus { Id = 3, Name = "Cancelled" },
+            new OrderStatus { Id = 4, Name = "Refunded" }
+        );
+
     }
 
 
     public DbSet<StoreFinancial> StoreFinancials { get; set; }
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<Customer> Customers { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<PaymentMethod> PaymentMethods { get; set; }
+    public DbSet<PurchaseChannel> PurchaseChannels { get; set; }
+    public DbSet<OrderStatus> OrderStatuses { get; set; }
+
+
+
 }

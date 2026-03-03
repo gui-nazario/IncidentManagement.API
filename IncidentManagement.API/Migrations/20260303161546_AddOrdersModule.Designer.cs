@@ -3,6 +3,7 @@ using System;
 using IncidentManagement.API.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IncidentManagement.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260303161546_AddOrdersModule")]
+    partial class AddOrdersModule
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -282,28 +285,6 @@ namespace IncidentManagement.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OrderStatuses");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Pending"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Paid"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Cancelled"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Refunded"
-                        });
                 });
 
             modelBuilder.Entity("PaymentMethod", b =>
@@ -321,28 +302,6 @@ namespace IncidentManagement.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PaymentMethods");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Pix"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Credit Card"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Debit Card"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Boleto"
-                        });
                 });
 
             modelBuilder.Entity("PurchaseChannel", b =>
@@ -360,23 +319,6 @@ namespace IncidentManagement.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PurchaseChannels");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "App"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Website"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Physical Store"
-                        });
                 });
 
             modelBuilder.Entity("StoreFinancial", b =>
