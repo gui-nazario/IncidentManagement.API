@@ -1,69 +1,95 @@
 # 🚀 IncidentManagement.API
 
-API REST desenvolvida em *.NET 10* para gerenciamento de lojas, usuários e indicadores financeiros, com autenticação JWT e arquitetura em camadas.
+![.NET](https://img.shields.io/badge/.NET-10-blue)
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET-Core-purple)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
+![JWT](https://img.shields.io/badge/Auth-JWT-green)
+![Deploy](https://img.shields.io/badge/Deploy-Render-black)
+
+API REST desenvolvida em *.NET 10* para gerenciamento de lojas, usuários e indicadores financeiros,
+com autenticação JWT, auditoria automática de ações e arquitetura backend moderna em camadas.
+
+---
+
+## 🌐 API Online
+
+Base URL:
+
+
+https://incidentmanagement-api.onrender.com
+
+
+Swagger:
+
+
+https://incidentmanagement-api.onrender.com/swagger
+
 
 ---
 
 ## 📌 Sobre o Projeto
 
-O *IncidentManagement.API* é uma API backend criada para centralizar o gerenciamento de informações de lojas, incluindo:
+O *IncidentManagement.API* centraliza o gerenciamento operacional de lojas,
+controle de usuários e indicadores financeiros.
 
-* Cadastro e autenticação de usuários
-* Consulta de lojas
-* Indicadores financeiros
-* Dashboard resumido
-* Controle de acesso via JWT
-* Tratamento global de exceções
+A aplicação foi construída para simular um ambiente corporativo real,
+com foco em:
 
-O projeto segue boas práticas modernas de desenvolvimento backend utilizando *Clean Architecture simplificada*, separando responsabilidades entre Controllers, Services e Repositories.
+- Segurança
+- Auditoria
+- Rastreabilidade
+- Separação de responsabilidades
+- Arquitetura limpa
 
 ---
 
 ## 🧱 Arquitetura
 
-O projeto está organizado em camadas:
-
 
 IncidentManagement.API
 │
-├── Controllers        → Endpoints da API
+├── Controllers        → Endpoints HTTP
 ├── Application
 │   └── Services       → Regras de negócio
+├── Domain
+│   ├── Entities       → Modelos do domínio
+│   └── Enums          → Tipagens
 ├── Infrastructure
-│   ├── Data           → DbContext
+│   ├── Data           → DbContext / EF Core
 │   └── Repositories   → Acesso ao banco
-├── Middleware         → Tratamento global de erros
+├── Middleware         → Auditoria + Exceptions
 └── Program.cs         → Configuração da aplicação
 
 
 ---
 
-## ⚙️ Tecnologias Utilizadas
+## ⚙️ Tecnologias
 
-* ✅ .NET 10
-* ✅ ASP.NET Core Web API
-* ✅ Entity Framework Core
-* ✅ PostgreSQL
-* ✅ JWT Authentication
-* ✅ Swagger (OpenAPI)
-* ✅ Dependency Injection
-* ✅ Middleware de Exception Handling
-* ✅ BCrypt (Hash de senha)
+- .NET 10
+- ASP.NET Core Web API
+- Entity Framework Core
+- PostgreSQL
+- JWT Authentication
+- Swagger (OpenAPI)
+- BCrypt
+- Clean Architecture
+- Middleware Customizado
+- Auditoria Estruturada
+- Deploy via Render
 
 ---
 
 ## 🔐 Autenticação
 
-A API utiliza *JWT (JSON Web Token)* para autenticação.
+A API utiliza *JWT (JSON Web Token)*.
 
-Fluxo:
+### Fluxo
 
-1. Usuário realiza login
-2. API retorna:
-
-   * Access Token
-   * Refresh Token
-3. Token deve ser enviado nos endpoints protegidos:
+1. Login via /api/Auth/login
+2. Recebe:
+   - Access Token
+   - Refresh Token
+3. Enviar token nos endpoints protegidos:
 
 
 Authorization: Bearer SEU_TOKEN
@@ -71,60 +97,133 @@ Authorization: Bearer SEU_TOKEN
 
 ---
 
+## 👤 Controle de Acesso
+
+Sistema hierárquico de usuários:
+
+- SuperAdmin
+- Admin
+- User
+
+Apenas usuários autorizados podem:
+
+- Criar usuários
+- Alterar roles
+- Executar ações administrativas
+
+---
+
 ## 📡 Principais Endpoints
 
 ### 🔑 Auth
 
-| Método | Endpoint             | Descrição         |
-| ------ | -------------------- | ----------------- |
-| POST   | /api/Auth/register | Registrar usuário |
-| POST   | /api/Auth/login    | Login             |
-| POST   | /api/Auth/refresh  | Renovar token     |
+| Método | Endpoint |
+|--------|----------|
+| POST | /api/Auth/register |
+| POST | /api/Auth/login |
+| POST | /api/Auth/refresh |
+
+---
+
+### 👤 Users
+
+| Método | Endpoint |
+|--------|----------|
+| PUT | /api/users/{username}/role |
+
+Exemplo de body:
+
+
+{
+  "role": "Admin",
+  "reason": "Promoção por mérito"
+}
+
 
 ---
 
 ### 🏪 Store
 
-| Método | Endpoint          | Descrição          |
-| ------ | ----------------- | ------------------ |
-| GET    | /api/Store      | Listar lojas       |
-| GET    | /api/Store/{id} | Buscar loja por ID |
+| Método | Endpoint |
+|--------|----------|
+| GET | /api/Store |
+| GET | /api/Store/{id} |
 
 ---
 
 ### 📊 Dashboard
 
-| Método | Endpoint                 | Descrição    |
-| ------ | ------------------------ | ------------ |
-| GET    | /api/Dashboard/summary | Resumo geral |
+| Método | Endpoint |
+|--------|----------|
+| GET | /api/Dashboard/summary |
 
 ---
 
 ### 💰 Financial
 
-| Método | Endpoint                                 | Descrição                 |
-| ------ | ---------------------------------------- | ------------------------- |
-| POST   | /api/Financial/seed                    | Popular dados financeiros |
-| GET    | /api/Financial/store/{storeId}         | Dados financeiros         |
-| GET    | /api/Financial/store/{storeId}/growth  | Crescimento               |
-| GET    | /api/Financial/store/{storeId}/metrics | Métricas                  |
+| Método | Endpoint |
+|--------|----------|
+| POST | /api/Financial/seed |
+| GET | /api/Financial/store/{storeId} |
+| GET | /api/Financial/store/{storeId}/growth |
+| GET | /api/Financial/store/{storeId}/metrics |
 
 ---
 
-## 🧠 Middleware de Exceções
+## 🧠 Sistema de Auditoria
 
-A aplicação possui um middleware global responsável por:
+A aplicação possui um *Audit Middleware automático* que registra:
 
-* Capturar exceções não tratadas
-* Retornar respostas padronizadas
-* Evitar exposição de erros internos
+- Usuário responsável
+- Endpoint acessado
+- Método HTTP
+- StatusCode
+- Success (true/false)
+- ErrorMessage (se houver)
+- Reason (motivo da alteração)
+- Source (API ou BusinessRule)
+- Timestamp
 
-Exemplo de resposta:
+---
 
-json
+### 🔎 Classificação de Logs
+
+| Source | Significado |
+|--------|-------------|
+| API | Registro automático da chamada HTTP |
+| BusinessRule | Alteração crítica de regra de negócio |
+
+---
+
+### 📄 Exemplo de Log
+
+
+{
+  "action": "PUT /api/users/testuser2/role",
+  "performedBy": "admin",
+  "statusCode": 200,
+  "success": true,
+  "reason": "Promoção interna",
+  "source": "BusinessRule"
+}
+
+
+---
+
+## 🧠 Middleware Global
+
+### Exception Middleware
+
+- Captura exceções não tratadas
+- Retorna resposta padronizada
+- Evita exposição de stack trace
+
+Exemplo:
+
+
 {
   "status": 500,
-  "message": "Ocorreu um erro interno no servidor."
+  "message": "Erro interno no servidor."
 }
 
 
@@ -132,7 +231,7 @@ json
 
 ## 🗄️ Banco de Dados
 
-Banco utilizado:
+Banco:
 
 
 PostgreSQL
@@ -144,80 +243,85 @@ ORM:
 Entity Framework Core
 
 
+Executar migrations:
+
+
+dotnet ef database update
+
+
 Connection String configurada em:
 
 
 appsettings.json
+appsettings.Production.json
 
 
 ---
 
-## ▶️ Executando o Projeto
+## 🐳 Docker
 
-### 1️⃣ Clonar repositório
+A aplicação é compatível com Docker.
 
-bash
+Build:
+
+
+docker build -t incidentmanagement-api .
+
+
+Run:
+
+
+docker run -p 8080:8080 incidentmanagement-api
+
+
+---
+
+## ▶️ Executando Localmente
+
+Clonar:
+
+
 git clone https://github.com/seu-usuario/IncidentManagement.API.git
 
 
----
+Entrar na pasta:
 
-### 2️⃣ Entrar na pasta
 
-bash
 cd IncidentManagement.API
 
 
----
+Restaurar:
 
-### 3️⃣ Restaurar dependências
 
-bash
 dotnet restore
 
 
----
+Aplicar migrations:
 
-### 4️⃣ Executar migrations (se aplicável)
 
-bash
 dotnet ef database update
 
 
----
+Rodar:
 
-### 5️⃣ Rodar API
 
-bash
 dotnet run
 
 
 ---
 
-## 📘 Documentação Swagger
-
-Após iniciar o projeto:
-
-
-https://localhost:7061/swagger
-
-
-Permite:
-
-✅ Testar endpoints
-✅ Visualizar contratos
-✅ Simular requisições
-
----
-
-## 🔄 Fluxo Geral da Aplicação
+## 🔄 Fluxo da Aplicação
 
 
 Request
    ↓
+Audit Middleware
+   ↓
+Exception Middleware
+   ↓
 Controller
    ↓
-Service (Regra de negócio)
+Service
    ↓
 Repository
    ↓
@@ -228,35 +332,33 @@ Response
 
 ---
 
-## ✅ Boas Práticas Aplicadas
+## 🏗 Boas Práticas Aplicadas
 
-* Separação de responsabilidades
-* Injeção de dependência
-* Repository Pattern
-* Service Layer Pattern
-* Tratamento global de erros
-* Autenticação segura
-* Hash de senha
-* API documentada
+- Clean Architecture
+- Repository Pattern
+- Service Layer
+- JWT Security
+- Auditoria estruturada
+- Validação de entrada
+- Controle hierárquico de usuários
+- Separação de ambientes (Development / Production)
+- Deploy Cloud
 
 ---
 
-## 📈 Possíveis Melhorias Futuras
+## 📈 Melhorias Futuras
 
-* ✅ Roles e Policies
-* ✅ Logs estruturados
-* ✅ Cache Redis
-* ✅ Testes unitários
-* ✅ CI/CD Pipeline
-* ✅ Dockerização
-* ✅ Rate Limiting
+- Rate Limiting
+- Cache Redis
+- Testes unitários
+- OpenTelemetry
+- CI/CD avançado
+- Monitoramento
+- Logs estruturados externos
 
 ---
 
 ## 👨‍💻 Autor
 
-Desenvolvido por *Guilherme Nazario*
-
-Backend Developer | .NET | APIs REST | Automação
-
----
+Guilherme Nazario  
+Backend Developer | .NET | APIs REST | Cloud | Arquitetura Backend
