@@ -306,7 +306,7 @@ dotnet run
 
 ## 🔄 Fluxo da Aplicação
 
-
+````
 Request
    ↓
 Audit Middleware
@@ -322,7 +322,7 @@ Repository
 Database
    ↓
 Response
-
+````
 
 ---
 
