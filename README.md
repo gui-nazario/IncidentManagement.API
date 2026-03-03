@@ -13,12 +13,6 @@ com autenticação JWT, auditoria automática de ações e arquitetura backend m
 
 ## 🌐 API Online
 
-Base URL:
-
-
-https://incidentmanagement-api.onrender.com
-
-
 Swagger:
 
 
