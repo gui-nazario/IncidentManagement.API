@@ -90,4 +90,13 @@ app.MapControllers();
 app.MapGet("/", () => Results.Redirect("/swagger"))
    .ExcludeFromDescription();
 
+app.MapGet("/debug-env", () =>
+{
+    return Results.Ok(new
+    {
+        Environment = builder.Environment.EnvironmentName,
+        Connection = builder.Configuration.GetConnectionString("DefaultConnection")
+    });
+});
+
 app.Run();
